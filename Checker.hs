@@ -40,7 +40,7 @@ pastTense x
   | snd x == 'u' && last y == 'て' = (init y ++ "た", 'u')
   | snd x == 'u' && last y == 'で' = (init y ++ "だ", 'u')
   | snd x == 'i'                   = (init (fst x) ++ "かった", 'i')
-  | snd x == 'n'                   = (init (fst x) ++ "だった", 'n')
+  | snd x == 'd'                   = (init (fst x) ++ "だった", 'n')
   where y = teForm (fst x)
 
 taiForm :: Word -> Word
@@ -55,7 +55,7 @@ taiForm x
   | snd x == 'u' && y == 'む' = (init (fst x) ++ "みたい", 'i')
   | snd x == 'u' && y == 'ぶ' = (init (fst x) ++ "びたい", 'i')
   | snd x == 'u' && y == 'る' = (init (fst x) ++ "りたい", 'i')
-  | snd x == 's'              = (init (fst x) ++ "したい", 'i')
+  | snd x == 'n'              = (init (fst x) ++ "したい", 'i')
   where y = last (fst x)
 
 --negativeTai :: Word -> String
@@ -65,7 +65,8 @@ negative :: Word -> Word
 negative x
   | snd x == 'i'              = (init (fst x) ++ "くない", 'i')
   | snd x == 'r'              = (init (fst x) ++ "ない", 'i')
-  | snd x == 'n'              = (init (fst x) ++ "じゃない", 'i')
+  | snd x == 'd'              = (init (fst x) ++ "じゃない", 'i')
+  | snd x == 'n'              = (init (fst x) ++ "しない", 'i')
   | snd x == 'u' && y == 'う' = (init (fst x) ++ "わない", 'i')
   | snd x == 'u' && y == 'く' = (init (fst x) ++ "かない", 'i')
   | snd x == 'u' && y == 'ぐ' = (init (fst x) ++ "がない", 'i')
@@ -79,7 +80,7 @@ negative x
 
 imperitive :: Word -> Word
 imperitive x
-  | snd x == 's'              = (fst x ++ "しろ", 'r')
+  | snd x == 'n'              = (fst x ++ "しろ", 'r')
   | snd x == 'r'              = (init (fst x) ++ "れ",'r')
   | snd x == 'u' && y == 'う' = (init (fst x) ++ "え", 'u')
   | snd x == 'u' && y == 'く' = (init (fst x) ++ "け", 'u')
@@ -94,12 +95,12 @@ imperitive x
 
 negativeImperitive :: Word -> Word
 negativeImperitive x
-  | snd x == 's'              = (fst x ++ "するな", 'n')
+  | snd x == 'n'              = (fst x ++ "するな", 'n')
   | otherwise                 = (fst x ++ "な", 'n')
 
 volitional :: Word -> Word
 volitional x
-  | snd x == 's'              = (fst x ++ "しよう", 'u')
+  | snd x == 'n'              = (fst x ++ "しよう", 'u')
   | snd x == 'r'              = (init (fst x) ++ "よう",'r')
   | snd x == 'u' && y == 'う' = (init (fst x) ++ "おう", 'u')
   | snd x == 'u' && y == 'く' = (init (fst x) ++ "こう", 'u')
@@ -116,8 +117,9 @@ volitional x
 
 potential :: Word -> Word
 potential x
-  | snd x == 'n'              = (fst x ++ "できる", 'r')
+  | snd x == 'd'              = (fst x ++ "できる", 'r')
   | snd x == 'r'              = (init (fst x) ++ "られる",'r')
+  | snd x == 'n'              = (init (fst x) ++ "せられる",'r')
   | snd x == 'u' && y == 'う' = (init (fst x) ++ "える", 'u')
   | snd x == 'u' && y == 'く' = (init (fst x) ++ "ける", 'u')
   | snd x == 'u' && y == 'ぐ' = (init (fst x) ++ "げる", 'u')
@@ -135,7 +137,7 @@ conditional x = (fst (pastTense x) ++ "ら", snd x)
 
 passive :: Word -> Word
 passive x
-  | snd x == 's'              = (fst x ++ "される", 'r')
+  | snd x == 'n'              = (fst x ++ "される", 'r')
   | snd x == 'r'              = (init (fst x) ++ "られる",'r')
   | snd x == 'u' && y == 'う' = (init (fst x) ++ "われる", 'u')
   | snd x == 'u' && y == 'く' = (init (fst x) ++ "かれる", 'u')
@@ -150,7 +152,7 @@ passive x
 
 causitive :: Word -> Word
 causitive x
-  | snd x == 's'              = (fst x ++ "させる", 'r')
+  | snd x == 'n'              = (fst x ++ "させる", 'r')
   | snd x == 'r'              = (init (fst x) ++ "させる",'r')
   | snd x == 'u' && y == 'う' = (init (fst x) ++ "わせる", 'u')
   | snd x == 'u' && y == 'く' = (init (fst x) ++ "かせる", 'u')
@@ -168,7 +170,7 @@ causitivePassive = passive . causitive
 
 provisionalConditional :: Word -> Word
 provisionalConditional x
-  | snd x == 's'              = (fst x ++ "すれば", 'u')
+  | snd x == 'n'              = (fst x ++ "すれば", 'u')
   | snd x == 'r'              = (init (fst x) ++ "れば",'r')
   | snd x == 'u' && y == 'う' = (init (fst x) ++ "えば", 'u')
   | snd x == 'u' && y == 'く' = (init (fst x) ++ "けば", 'u')
@@ -185,7 +187,7 @@ provisionalConditional x
 
 polite :: Word -> String
 polite x
-  | snd x == 's'              = fst x ++ "します"
+  | snd x == 'n'              = fst x ++ "します"
   | snd x == 'r'              = init (fst x) ++ "ます"
   | snd x == 'u' && y == 'う' = init (fst x) ++ "います"
   | snd x == 'u' && y == 'く' = init (fst x) ++ "きます"
@@ -240,5 +242,5 @@ addType x
   | otherwise      = (x,'n')
 
 dbLookup :: String -> Word
-dbLookup x = undefined
+dbLookup = undefined
  -- where y = openFile "edict" ReadMode
