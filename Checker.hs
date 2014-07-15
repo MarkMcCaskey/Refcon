@@ -22,11 +22,11 @@ conjugate w c
   | c == "Causitive"   = causitive $ Just w
   | c == "CausPass"    = passive . causitive $ Just w
   | c == "Passive"     = passive $ Just w
-  | c == "Polite"      = Just (fromJust (polite w), 'e')
-  | c == "PoliteNeg"   = Just (fromJust (politeNeg w), 'e')
-  | c == "PolitePast"  = Just (fromJust (politePast w), 'e')
-  | c == "PNegPast"    = Just (fromJust (politeNegPast w), 'e')
-  | c == "PoVo"        = Just (fromJust (politeVolitional w), 'e')
+  | c == "Polite"      = polite w
+  | c == "PoliteNeg"   = politeNeg w
+  | c == "PolitePast"  = politePast w
+  | c == "PNegPast"    = politeNegPast w
+  | c == "PoVo"        = politeVolitional w
   | otherwise          = Nothing
 
 teForm :: Maybe Word -> Maybe Word
@@ -233,45 +233,45 @@ provisionalConditional x
   where Just z = x
         y      = last (fst z)
 
-polite :: Word -> Maybe String
+polite :: Word -> Maybe Word
 polite x
-  | snd x == 'n'              = Just $ fst x ++ "します"
-  | snd x == 'r'              = Just $ init (fst x) ++ "ます"
-  | snd x == 'u' && y == 'う' = Just $ init (fst x) ++ "います"
-  | snd x == 'u' && y == 'く' = Just $ init (fst x) ++ "きます"
-  | snd x == 'u' && y == 'ぐ' = Just $ init (fst x) ++ "ぎます"
-  | snd x == 'u' && y == 'す' = Just $ init (fst x) ++ "します"
-  | snd x == 'u' && y == 'つ' = Just $ init (fst x) ++ "ちます"
-  | snd x == 'u' && y == 'ぬ' = Just $ init (fst x) ++ "にます" 
-  | snd x == 'u' && y == 'む' = Just $ init (fst x) ++ "みます"
-  | snd x == 'u' && y == 'ぶ' = Just $ init (fst x) ++ "びます"
-  | snd x == 'u' && y == 'る' = Just $ init (fst x) ++ "ります"
+  | snd x == 'n'              = Just (fst x ++ "します", 'e')
+  | snd x == 'r'              = Just (init (fst x) ++ "ます", 'e')
+  | snd x == 'u' && y == 'う' = Just (init (fst x) ++ "います", 'e')
+  | snd x == 'u' && y == 'く' = Just (init (fst x) ++ "きます", 'e')
+  | snd x == 'u' && y == 'ぐ' = Just (init (fst x) ++ "ぎます", 'e')
+  | snd x == 'u' && y == 'す' = Just (init (fst x) ++ "します", 'e')
+  | snd x == 'u' && y == 'つ' = Just (init (fst x) ++ "ちます", 'e')
+  | snd x == 'u' && y == 'ぬ' = Just (init (fst x) ++ "にます", 'e')
+  | snd x == 'u' && y == 'む' = Just (init (fst x) ++ "みます", 'e')
+  | snd x == 'u' && y == 'ぶ' = Just (init (fst x) ++ "びます", 'e')
+  | snd x == 'u' && y == 'る' = Just (init (fst x) ++ "ります", 'e')
   | otherwise                 = Nothing
   where y = last (fst x)
 
-politeNeg :: Word -> Maybe String
+politeNeg :: Word -> Maybe Word
 politeNeg x
   | isNothing (polite x) = Nothing 
-  | otherwise            = Just $ init y ++ "せん"
-  where Just y           = polite x
+  | otherwise            = Just (init y ++ "せん", 'e')
+  where y                = fst . fromJust . polite $ x
 
-politeNegPast :: Word -> Maybe String
+politeNegPast :: Word -> Maybe Word
 politeNegPast x
   | isNothing (politeNeg x) = Nothing
-  | otherwise               = Just $ y ++ "でした"
-  where Just y              = politeNeg x
+  | otherwise               = Just (y ++ "でした", 'e')
+  where y                   = fst . fromJust . politeNeg $ x
 
-politePast :: Word -> Maybe String
+politePast :: Word -> Maybe Word
 politePast x 
   | isNothing (polite x) = Nothing
-  | otherwise            = Just $ y ++ "した"
-  where Just y           = polite x
+  | otherwise            = Just (y ++ "した", 'e')
+  where y                = fst . fromJust . polite $ x
 
-politeVolitional :: Word -> Maybe String
+politeVolitional :: Word -> Maybe Word
 politeVolitional x
   | isNothing (polite x) = Nothing
-  | otherwise            = Just $ init y ++ "しょう" 
-  where Just y           = polite x
+  | otherwise            = Just (init y ++ "しょう", 'e')
+  where y                = fst . fromJust . polite $ x
 
 validC :: Conjugation -> Bool
 validC [] = False
