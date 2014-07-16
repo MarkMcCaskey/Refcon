@@ -43,7 +43,7 @@ teForm x
   | last y == 'す' = Just (init y ++ "して", 'r')
   -- add いるえる　To　て
   | otherwise         = Nothing
-  where Just z = x
+  where z = fromJust x
         y = fst z
 
 teIru :: Maybe Word -> Maybe Word
@@ -62,8 +62,8 @@ pastTense x
   | snd z == 'i'                   = Just (init (fst z) ++ "かった", 'i')
   | snd z == 'd'                   = Just (init (fst z) ++ "だった", 'n')
   | otherwise                      = Nothing
-  where Just z = x
-        y      = fst . fromJust . teForm $ x
+  where z = fromJust x
+        y = fst . fromJust . teForm $ x
 
 taiForm :: Maybe Word -> Maybe Word
 taiForm Nothing = Nothing
@@ -80,8 +80,8 @@ taiForm x
   | snd z == 'u' && y == 'る' = Just (init (fst z) ++ "りたい", 'i')
   | snd z == 'n'              = Just (init (fst z) ++ "したい", 'i')
   | otherwise                 = Nothing
-  where Just z = x
-        y      = last (fst z)
+  where z = fromJust x
+        y = last (fst z)
 
 negative :: Maybe Word -> Maybe Word
 negative Nothing = Nothing
@@ -100,8 +100,8 @@ negative x
   | snd z == 'u' && y == 'ぶ' = Just (init (fst z) ++ "ばない", 'i')
   | snd z == 'u' && y == 'る' = Just (init (fst z) ++ "らない", 'i')
   | otherwise                 = Nothing
-  where Just z = x
-        y      = last (fst z)
+  where z = fromJust x
+        y = last (fst z)
 
 imperitive :: Maybe Word -> Maybe Word
 imperitive Nothing = Nothing
@@ -117,8 +117,8 @@ imperitive x
   | snd z == 'u' && y == 'む' = Just (init (fst z) ++ "め", 'u')
   | snd z == 'u' && y == 'ぶ' = Just (init (fst z) ++ "べ", 'u')
   | snd z == 'u' && y == 'る' = Just (init (fst z) ++ "れ", 'u')
-  where Just z = x
-        y      = last (fst z)
+  where z = fromJust x
+        y = last (fst z)
 
 negativeImperitive :: Maybe Word -> Maybe Word
 negativeImperitive Nothing = Nothing
@@ -126,7 +126,7 @@ negativeImperitive x
   | snd z == 'n'                 = Just (fst z ++ "するな", 'n')
   | snd z == 'r' || snd z == 'u' = Just (fst z ++ "な", 'n')
   | otherwise                    = Nothing
-  where Just z = x
+  where z = fromJust x
 
 volitional :: Maybe Word -> Maybe Word
 volitional Nothing = Nothing
@@ -145,8 +145,8 @@ volitional x
   | snd z == 'i'              = Just (init (fst z) ++ "かろう", 'u')
   | snd z == 'a'              = Just (init (fst z) ++ "だろう", 'u')
   | otherwise                 = Nothing
-  where Just z = x
-        y      = last (fst z)
+  where z = fromJust x
+        y = last (fst z)
 
 potential :: Maybe Word -> Maybe Word
 potential Nothing = Nothing
@@ -165,14 +165,14 @@ potential x
   | snd z == 'u' && y == 'る' = Just (init (fst z) ++ "れる", 'u')
   | snd z == 'i'              = Just (init (fst z) ++ "あり得る", 'u')
   | otherwise                 = Nothing
-  where Just z = x
-        y      = last (fst z)
+  where z = fromJust x
+        y = last (fst z)
 
 conditional :: Maybe Word -> Maybe Word
 conditional Nothing = Nothing
 conditional x       = Just (fst z ++ "ら", snd y)
-  where Just z = pastTense x
-        Just y = x
+  where z = fromJust . pastTense $ x
+        y = fromJust x
 
 passive :: Maybe Word -> Maybe Word
 passive Nothing = Nothing
@@ -189,7 +189,7 @@ passive x
   | snd z == 'u' && y == 'ぶ' = Just (init (fst z) ++ "ばれる", 'u')
   | snd z == 'u' && y == 'る' = Just (init (fst z) ++ "られる", 'u')
   | otherwise                 = Nothing
-  where Just z = x
+  where z = fromJust x
         y = last (fst z)
 
 causitive :: Maybe Word -> Maybe Word
@@ -207,8 +207,8 @@ causitive x
   | snd z == 'u' && y == 'ぶ' = Just (init (fst z) ++ "ばせる", 'u')
   | snd z == 'u' && y == 'る' = Just (init (fst z) ++ "らせる", 'u')
   | otherwise                 = Nothing
-  where Just z = x 
-        y      = last (fst z)
+  where z = fromJust x 
+        y = last (fst z)
 
 causitivePassive :: Maybe Word -> Maybe Word
 causitivePassive Nothing = Nothing
@@ -230,8 +230,8 @@ provisionalConditional x
   | snd z == 'u' && y == 'る' = Just (init (fst z) ++ "れば", 'u')
   | snd z == 'i'              = Just (init (fst z) ++ "ければ", 'u')
   | snd z == 'a'              = Just (init (fst z) ++ "であれば", 'u')
-  where Just z = x
-        y      = last (fst z)
+  where z = fromJust x
+        y = last (fst z)
 
 polite :: Word -> Maybe Word
 polite x
@@ -307,10 +307,8 @@ addType x
   | last x == 'ぬ' = Just (x,'u')
   | last x == 'ぶ' = Just (x,'u')
   | last x == 'む' = Just (x,'u')
-  | last x == 'る' = dbLookup x
   | last x == 'だ' = Just (x, 'd')
-  | otherwise      = Just (x,'n') --This needs to be fixed--
--- | otherwise      = Nothing
+  | otherwise      = dbLookup x
 
 dbLookup :: String -> Maybe Word
 dbLookup = undefined
