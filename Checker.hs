@@ -1,6 +1,13 @@
 module Checker where
 
 import Data.Maybe
+import System.IO
+--import qualified Data.ByteString as BS
+--import Data.Text.ICU.Convert
+import qualified Data.Text as DT
+import Data.Text.Encoding
+--import qualified Data.ByteString.Lazy.Char8 as BSS
+import qualified Data.ByteString.Char8 as C
 
 type Word = (String, Char)
 type Conjugation = String
@@ -312,4 +319,16 @@ addType x
 
 dbLookup :: String -> Maybe Word
 dbLookup = undefined
- -- where y = openFile "edict" ReadMode
+
+getDict :: IO String
+getDict = do
+  --conv <- open "ISO-8859-1" Nothing
+  y <- openFile "edict" ReadMode
+  hSetEncoding y latin1
+  z <- hGetContents y
+  let k = decodeLatin1 $ C.pack z 
+  --let k = DT.pack $ read $ toUnicode conv $ BS.pack z
+  hClose y
+  return $ DT.unpack k
+  
+
