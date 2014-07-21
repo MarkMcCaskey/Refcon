@@ -10,7 +10,6 @@ conjugate _ []         = Nothing
 conjugate ([],_) _     = Nothing
 conjugate w c
   | not (validC c)     = Just w
---  | not (snd w == 'u')  = fst w
   | c == "Te"          = teForm $ Just w
   | c == "Imperitive"  = imperitive $ Just w
   | c == "TeIru"       = teIru $ Just w
@@ -32,17 +31,17 @@ conjugate w c
 teForm :: Maybe Word -> Maybe Word
 teForm Nothing = Nothing
 teForm x
-  | last y == 'く' = Just (init y ++ "いて", 'r') --Not sure what flag to put on te form
-  | last y == 'ぐ' = Just (init y ++ "いで", 'r')
-  | last y == 'う' = Just (init y ++ "って", 'r')
-  | last y == 'つ' = Just (init y ++ "って", 'r')
-  | last y == 'る' = Just (init y ++ "って", 'r')
-  | last y == 'ぬ' = Just (init y ++ "んで", 'r')
-  | last y == 'む' = Just (init y ++ "んで", 'r')
-  | last y == 'ぶ' = Just (init y ++ "んで", 'r')
-  | last y == 'す' = Just (init y ++ "して", 'r')
-  -- add いるえる　To　て
-  | otherwise         = Nothing
+  | snd  z == 'r'   = Just (init y ++ "て",  'e') --This needs to check for preceding い or え
+  | last y == 'く' = Just (init y ++ "いて", 'e') --Changing this from 'r' to 'e' may break other conjugations
+  | last y == 'ぐ' = Just (init y ++ "いで", 'e')
+  | last y == 'う' = Just (init y ++ "って", 'e')
+  | last y == 'つ' = Just (init y ++ "って", 'e')
+  | last y == 'る' = Just (init y ++ "って", 'e')
+  | last y == 'ぬ' = Just (init y ++ "んで", 'e')
+  | last y == 'む' = Just (init y ++ "んで", 'e')
+  | last y == 'ぶ' = Just (init y ++ "んで", 'e')
+  | last y == 'す' = Just (init y ++ "して", 'e')
+  | otherwise      = Nothing
   where z = fromJust x
         y = fst z
 
