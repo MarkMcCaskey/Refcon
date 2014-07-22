@@ -31,8 +31,8 @@ conjugate w c
 teForm :: Maybe Word -> Maybe Word
 teForm Nothing = Nothing
 teForm x
-  | snd  z == 'r'   = Just (init y ++ "て",  'e') --This needs to check for preceding い or え
-  | last y == 'く' = Just (init y ++ "いて", 'e') --Changing this from 'r' to 'e' may break other conjugations
+  | hasIorERu x    = Just (init y ++ "て",  'e') --This needs to check for preceding い or え
+  | last y == 'く' = Just (init y ++ "いて", 'e')
   | last y == 'ぐ' = Just (init y ++ "いで", 'e')
   | last y == 'う' = Just (init y ++ "って", 'e')
   | last y == 'つ' = Just (init y ++ "って", 'e')
@@ -44,6 +44,122 @@ teForm x
   | otherwise      = Nothing
   where z = fromJust x
         y = fst z
+
+hasIorERu :: Maybe Word -> Bool
+hasIorERu Nothing = False
+hasIorERu x = beginsWith x 'i' && beginsWith x 'e' && snd y == 'r'
+  where y = fromJust x
+
+beginsWith :: Maybe Word -> Char -> Bool --probably a bad name for this function, rename later
+beginsWith Nothing _  = False
+beginsWith x y
+  | y == 'a' = beginsWithA z
+  | y == 'i' = beginsWithI z
+  | y == 'u' = beginsWithU z
+  | y == 'e' = beginsWithE z
+  | y == 'o' = beginsWithO z
+  | otherwise = False --maybe not the best solution, possibly throw an error here
+  where z = fromJust x
+
+beginsWithA :: Word -> Bool
+beginsWithA x
+  | z == 'あ' = True
+  | z == 'か' = True
+  | z == 'が' = True
+  | z == 'さ' = True
+  | z == 'ざ' = True
+  | z == 'た' = True
+  | z == 'だ' = True
+  | z == 'な' = True
+  | z == 'は' = True
+  | z == 'ば' = True
+  | z == 'ぱ' = True
+  | z == 'ま' = True
+  | z == 'ら' = True
+  | z == 'わ' = True
+  | z == 'や' = True
+  | otherwise = False
+  where y = take 2 $ reverse . fst $ x
+        z = y !! 2
+
+beginsWithI :: Word -> Bool
+beginsWithI x
+  | z == 'い' = True
+  | z == 'き' = True
+  | z == 'ぎ' = True
+  | z == 'し' = True
+  | z == 'じ' = True
+  | z == 'ち' = True
+  | z == 'ぢ' = True
+  | z == 'に' = True
+  | z == 'ひ' = True
+  | z == 'び' = True
+  | z == 'ぴ' = True
+  | z == 'み' = True
+  | z == 'り' = True
+  | otherwise = False
+  where y = take 2 $ reverse . fst $ x
+        z = y !! 2
+
+beginsWithU :: Word -> Bool
+beginsWithU x
+  | z == 'う' = True
+  | z == 'く' = True
+  | z == 'ぐ' = True
+  | z == 'す' = True
+  | z == 'ず' = True
+  | z == 'つ' = True
+  | z == 'づ' = True
+  | z == 'ぬ' = True
+  | z == 'ふ' = True
+  | z == 'ぶ' = True
+  | z == 'ぷ' = True
+  | z == 'む' = True
+  | z == 'る' = True
+  | z == 'ゆ' = True
+  | otherwise = False
+  where y = take 2 $ reverse . fst $ x
+        z = y !! 2
+
+
+beginsWithE :: Word -> Bool
+beginsWithE x
+  | z == 'え' = True
+  | z == 'け' = True
+  | z == 'げ' = True
+  | z == 'せ' = True
+  | z == 'ぜ' = True
+  | z == 'て' = True
+  | z == 'で' = True
+  | z == 'ね' = True
+  | z == 'へ' = True
+  | z == 'べ' = True
+  | z == 'ぺ' = True
+  | z == 'め' = True
+  | z == 'れ' = True
+  | otherwise = False
+  where y = take 2 $ reverse . fst $ x
+        z = y !! 2
+
+beginsWithO :: Word -> Bool
+beginsWithO x
+  | z == 'お' = True
+  | z == 'こ' = True
+  | z == 'ご' = True
+  | z == 'そ' = True
+  | z == 'ぞ' = True
+  | z == 'と' = True
+  | z == 'ど' = True
+  | z == 'の' = True
+  | z == 'ほ' = True
+  | z == 'ぼ' = True
+  | z == 'ぽ' = True
+  | z == 'も' = True
+  | z == 'ろ' = True
+  | z == 'よ' = True
+  | otherwise = False
+  where y = take 2 $ reverse . fst $ x
+        z = y !! 2
 
 teIru :: Maybe Word -> Maybe Word
 teIru Nothing = Nothing
@@ -59,7 +175,7 @@ pastTense x
   | snd z == 'u' && last y == 'て' = Just (init y ++ "た", 'u')
   | snd z == 'u' && last y == 'で' = Just (init y ++ "だ", 'u')
   | snd z == 'i'                   = Just (init (fst z) ++ "かった", 'i')
-  | snd z == 'd'                   = Just (init (fst z) ++ "だった", 'n')
+  | snd z == 'd'                   = Just (init (fst z) ++ "だった", 'd')
   | otherwise                      = Nothing
   where z = fromJust x
         y = fst . fromJust . teForm $ x
