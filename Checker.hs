@@ -26,6 +26,7 @@ conjugate w c
   | c == "PolitePast"  = politePast w
   | c == "PNegPast"    = politeNegPast w
   | c == "PoVo"        = politeVolitional w
+  | c == "Stem"        = stem $ Just w
   | otherwise          = Nothing
 
 teForm :: Maybe Word -> Maybe Word
@@ -348,6 +349,25 @@ provisionalConditional x
   where z = fromJust x
         y = last (fst z)
 
+stem :: Maybe Word -> Maybe Word
+stem Nothing = Nothing
+stem x
+  | snd z == 'r'              = Just (init (fst z), 'r')
+  | snd z == 'u' && y == 'う' = Just (init (fst z) ++ "い", 'u')
+  | snd z == 'u' && y == 'く' = Just (init (fst z) ++ "き", 'u')
+  | snd z == 'u' && y == 'ぐ' = Just (init (fst z) ++ "ぎ", 'u')
+  | snd z == 'u' && y == 'す' = Just (init (fst z) ++ "し", 'u')
+  | snd z == 'u' && y == 'つ' = Just (init (fst z) ++ "ち", 'u')
+  | snd z == 'u' && y == 'ぬ' = Just (init (fst z) ++ "に", 'u')
+  | snd z == 'u' && y == 'む' = Just (init (fst z) ++ "み", 'u')
+  | snd z == 'u' && y == 'ぶ' = Just (init (fst z) ++ "び", 'u')
+  | snd z == 'u' && y == 'る' = Just (init (fst z) ++ "り", 'u')
+  | fst z == "する"           = Just ("し", 's')
+  | fst z == "くる"           = Just ("き", 'k')
+  | otherwise    = Nothing
+  where z = fromJust x
+        y = last (fst z)
+
 polite :: Word -> Maybe Word
 polite x
   | snd x == 'n'              = Just (fst x ++ "します", 'e')
@@ -408,6 +428,7 @@ validC x
   | x == "PolitePast"   = True
   | x == "PNegPast"     = True
   | x == "PoVo"         = True
+  | x == "Stem"         = True
   | otherwise           = False
 
 addType :: String -> Maybe Word
